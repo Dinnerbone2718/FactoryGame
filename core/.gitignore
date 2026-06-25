@@ -1,6 +1,11 @@
 .gradle/
 build/
 out/
+bin/
+**/bin/
+**/build/
+Factory/runtime/
 *.iml
 .idea/
+.vscode/
 .DS_Store
