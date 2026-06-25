@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Lwjgl3Launcher",
+      "request": "launch",
+      "mainClass": "com.factory.game.lwjgl3.Lwjgl3Launcher",
+      "projectName": "Factory-lwjgl3"
+    },
+    {
+      "type": "java",
+      "name": "Lwjgl3Launcher",
+      "request": "launch",
+      "mainClass": "com.factory.game.lwjgl3.Lwjgl3Launcher",
+      "projectName": "lwjgl3"
+    },
+    {
+      "name": "Run LWJGL (Clean Gradle)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": ".\\gradlew clean run"
+    }
+  ]
+}

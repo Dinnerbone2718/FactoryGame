@@ -1,0 +1,16 @@
+.gitkeep
+hs_err_pid3000.log
+hs_err_pid32544.log
+hs_err_pid35992.log
+hs_err_pid42980.log
+hs_err_pid43204.log
+hs_err_pid43548.log
+hs_err_pid45020.log
+hs_err_pid47080.log
+hs_err_pid52108.log
+hs_err_pid52952.log
+hs_err_pid54580.log
+hs_err_pid56892.log
+hs_err_pid61252.log
+hs_err_pid71232.log
+hs_err_pid71952.log

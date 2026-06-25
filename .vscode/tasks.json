@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run LWJGL (Clean Gradle)",
+      "type": "shell",
+      "command": ".\\gradlew",
+      "args": [
+        "clean",
+        "run"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
