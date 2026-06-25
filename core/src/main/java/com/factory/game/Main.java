@@ -120,6 +120,8 @@ public class Main extends ApplicationAdapter {
         PlacedObjectCache.init();
         AnimalSpriteCache.init();
 
+        System.out.println("Test");
+
         camera = new Camera();
         renderer = new WorldRenderer();
 
