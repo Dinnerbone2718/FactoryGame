@@ -11,6 +11,7 @@ import com.factory.game.Items.CrushingSelectionUI;
 import com.factory.game.Items.DroppedItem;
 import com.factory.game.Items.FishingMinigame;
 import com.factory.game.Items.FishingRecipe;
+import com.factory.game.Items.FoodManager;
 import com.factory.game.Items.FurnaceSelectionUI;
 import com.factory.game.Items.InventoryUI;
 import com.factory.game.Items.Item;
@@ -86,6 +87,7 @@ public class InteractionHandler {
     private final ChunkLoaderUI chunkLoaderUI;
     private final GoblinoHutUI goblinoHutUI;
     private final AnimalStatsUI animalStatsUI;
+    private final Hunger hunger;
 
     private final Random harvestRng = new Random();
     private float harvestCooldownTimer = 0f;
@@ -125,7 +127,8 @@ public class InteractionHandler {
         Minimap minimap,
         ChunkLoaderUI chunkLoaderUI,
         GoblinoHutUI goblinoHutUI,
-        AnimalStatsUI animalStatsUI
+        AnimalStatsUI animalStatsUI,
+        Hunger hunger
     ) {
         this.player = player;
         this.camera = camera;
@@ -156,6 +159,7 @@ public class InteractionHandler {
         this.chunkLoaderUI = chunkLoaderUI;
         this.goblinoHutUI = goblinoHutUI;
         this.animalStatsUI = animalStatsUI;
+        this.hunger = hunger;
     }
 
     public void handleInput() {
@@ -256,6 +260,11 @@ public class InteractionHandler {
 
             if (!inventoryUI.isVisible() && isHoldingBubbleWand()) {
                 world.spawnBubble(player);
+                return;
+            }
+
+            if (!inventoryUI.isVisible() && isHoldingFood()) {
+                eatSelectedFood();
                 return;
             }
 
@@ -830,6 +839,23 @@ public class InteractionHandler {
         }
     }
 
+    private void eatSelectedFood() {
+        int selectedSlot = inventoryUI.getSelectedSlot();
+        if (selectedSlot < 0) return;
+
+        ItemStack stack = player.getInventory().getSlot(selectedSlot);
+        if (stack == null) return;
+
+        boolean ate = hunger.eat(stack.getItem());
+        if (!ate) return;
+
+        player.getInventory().removeItem(stack.getItem(), 1);
+
+        if (player.getInventory().getSlot(selectedSlot) == null) {
+            inventoryUI.clearSelection();
+        }
+    }
+
     private void dropSelectedItem() {
         int selectedSlot = inventoryUI.getSelectedSlot();
         if (selectedSlot < 0) return;
@@ -952,6 +978,17 @@ public class InteractionHandler {
         if (sel < 0) return false;
         ItemStack stack = player.getInventory().getSlot(sel);
         return stack != null && stack.getItem() == Item.ANINMAL_PHONE;
+    }
+
+    public boolean isHoldingFood() {
+        int sel = inventoryUI.getSelectedSlot();
+        if (sel < 0) return false;
+        ItemStack stack = player.getInventory().getSlot(sel);
+        if (stack == null) return false;
+        FoodManager foodManager = CraftingManager.getFoodManagerFor(
+            stack.getItem()
+        );
+        return foodManager != null && foodManager.getIsFood();
     }
 
     public void drawEPrompt(SpriteBatch batch, float totalTime) {
@@ -1394,6 +1431,25 @@ public class InteractionHandler {
     }
 
     public void drawFlashlightTPrompt(SpriteBatch batch, float totalTime) {
+        float screenX =
+            player.getWorldX() + camera.cameraX + Main.TILE_SCALE * 0.5f;
+        float screenY = player.getWorldY() + camera.cameraY + Main.TILE_SCALE;
+
+        float iconSize = 24f;
+        float bob = (float) Math.sin(totalTime * 3.5) * 4f;
+
+        batch.setColor(1f, 1f, 1f, 0.92f);
+        batch.draw(
+            tPromptTexture,
+            screenX - iconSize * 0.5f,
+            screenY + 6f + bob,
+            iconSize,
+            iconSize
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
+    }
+
+    public void drawEatTPrompt(SpriteBatch batch, float totalTime) {
         float screenX =
             player.getWorldX() + camera.cameraX + Main.TILE_SCALE * 0.5f;
         float screenY = player.getWorldY() + camera.cameraY + Main.TILE_SCALE;

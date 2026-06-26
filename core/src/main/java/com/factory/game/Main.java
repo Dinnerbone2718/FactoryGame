@@ -105,6 +105,7 @@ public class Main extends ApplicationAdapter {
     private AnimalStatsUI animalStatsUI;
 
     private Clock clock;
+    private Hunger hunger;
 
     private final DayNightCycle dayNightCycle = new DayNightCycle();
 
@@ -194,6 +195,7 @@ public class Main extends ApplicationAdapter {
         goblinoHutUI = new GoblinoHutUI(goblinoHutManager);
 
         clock = new Clock(this, camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
+        hunger = new Hunger(camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
 
         PlanterManager planterManager = new PlanterManager();
         planterUI = new PlanterUI(planterManager);
@@ -255,7 +257,8 @@ public class Main extends ApplicationAdapter {
             minimap,
             chunkLoaderUI,
             goblinoHutUI,
-            animalStatsUI
+            animalStatsUI,
+            hunger
         );
 
         Gdx.input.setInputProcessor(minimap);
@@ -397,6 +400,8 @@ public class Main extends ApplicationAdapter {
                     ? worldManager::isBlockedAtOnRaft
                     : worldManager::isBlockedAt
             );
+
+            hunger.update(delta);
 
             penguinDude.visible = false;
 
@@ -957,6 +962,15 @@ public class Main extends ApplicationAdapter {
             interactionHandler.drawFlashlightTPrompt(batch, totalTime);
         }
 
+        if (
+            !inventoryUI.isVisible() &&
+            !uiBlocking &&
+            !player.isOnRaft() &&
+            interactionHandler.isHoldingFood()
+        ) {
+            interactionHandler.drawEatTPrompt(batch, totalTime);
+        }
+
         siftSelectionUI.render(batch);
         siftMinigame.render(batch);
         crushingSelectionUI.render(batch);
@@ -998,6 +1012,8 @@ public class Main extends ApplicationAdapter {
         if (player.getInventoryFlashlight() && player.isFlashlightOn()) {
             player.updateLightSourcePosition(camera);
         }
+
+        hunger.render(batch, totalTime);
 
         itemPipeUI.render(batch);
         crusherUI.render(batch);
@@ -1121,6 +1137,7 @@ public class Main extends ApplicationAdapter {
         goblinoHutUI.dispose();
         oreDrillUI.dispose();
         animalStatsUI.dispose();
+        hunger.dispose();
         if (CREATIVE_MODE && devConsole != null) devConsole.dispose();
     }
 }
