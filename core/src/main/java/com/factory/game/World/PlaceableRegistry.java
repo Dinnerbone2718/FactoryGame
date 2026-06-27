@@ -229,6 +229,11 @@ public final class PlaceableRegistry {
             Item.FILTER_ITEM_PIPE,
             new PlaceableDefinition(PlacedObject.Type.FILTER_ITEM_PIPE, 1)
         );
+
+        REGISTRY.put(
+            Item.STOVE,
+            new PlaceableDefinition(PlacedObject.Type.STOVE, 1)
+        );
     }
 
     public static PlaceableDefinition get(Item item) {

@@ -102,6 +102,7 @@ public class Player {
         inventory.addItem(Item.ANINMAL_PHONE, 1);
         inventory.addItem(Item.POO_PET, 1);
         inventory.addItem(Item.BUBBLE_WAND, 1);
+        inventory.addItem(Item.SODA, 1);
 
         loadTexture();
     }

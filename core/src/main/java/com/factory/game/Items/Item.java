@@ -195,6 +195,7 @@ public enum Item {
     FISHBOWL("Fishbowl", "items/fishbowl.png", true, 50, null),
     PAPER("Paper", "items/paper.png", true, 50, null),
     STRING("String", "items/string.png", true, 50, null),
+    SODA("Soda", "items/soda.png", true, 50, null),
 
     //FISH
     FISH("Fish", "items/fish.png", true, 50, null),
@@ -227,6 +228,7 @@ public enum Item {
     CHUNK_LOADER("Chunk Loader", "items/chunk_loader.png", false, 1, null),
     TRASH("Trash", "items/trash.png", false, 1, null),
     ORE_DRILL("Ore Drill", "items/ore_drill.png", false, 1, null),
+    STOVE("Stove", "items/oven.png", false, 1, null),
 
     DEVBARREL("Dev Barrel", "items/barrel.png", false, 1, null),
 

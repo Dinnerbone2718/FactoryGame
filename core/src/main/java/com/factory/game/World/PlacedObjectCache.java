@@ -1581,6 +1581,26 @@ public final class PlacedObjectCache {
                 false
             )
         );
+
+        CONFIGS.put(
+            PlacedObject.Type.STOVE,
+            new SpriteConfig(
+                "machines/model/oven.png",
+                1,
+                1,
+                RenderMode.FIXED,
+                0,
+                16f,
+                16f,
+                0f,
+                0f,
+                14,
+                10,
+                1,
+                0,
+                true
+            )
+        );
     }
 
     private static final Map<PlacedObject.Type, Texture> textures =

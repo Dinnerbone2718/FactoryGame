@@ -27,12 +27,13 @@ public class CraftingManager {
     private static final List<FoodManager> foodRecipes = new ArrayList<>();
 
     static {
-        foodRecipes.add(new FoodManager(Item.FISH, 10, 0));
+        foodRecipes.add(new FoodManager(Item.FISH, 20, 0));
         foodRecipes.add(new FoodManager(Item.DFISH1, 20, 0));
         foodRecipes.add(new FoodManager(Item.DFISH2, 25, 0));
         foodRecipes.add(new FoodManager(Item.DFISH3, 30, 5));
         foodRecipes.add(new FoodManager(Item.DFISH4, 40, 10));
         foodRecipes.add(new FoodManager(Item.QUALE, 15, 10));
+        foodRecipes.add(new FoodManager(Item.SODA, 5, 50));
     }
 
     static {

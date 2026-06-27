@@ -71,6 +71,7 @@ public class PlacedObject {
         LAMP_POST,
         ORE_DRILL,
         FILTER_ITEM_PIPE,
+        STOVE,
     }
 
     public final Type type;
