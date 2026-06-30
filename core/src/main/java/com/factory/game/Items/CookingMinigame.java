@@ -49,7 +49,7 @@ public class CookingMinigame {
         BURNT,
     }
 
-    private static final int NUM_PATTIES = 3;
+    private static final int NUM_PATTIES = 4;
 
     private static final float COUNTDOWN_DURATION = 3.0f;
     private static final float RESULT_DISPLAY_TIME = 2.6f;
@@ -59,7 +59,7 @@ public class CookingMinigame {
     private static final float BASE_COOK_TIME = 10.0f;
     private static final float COOK_TIME_JITTER = 0.6f;
 
-    private static final float INITIAL_STAGGER = 0.8f;
+    private static final float INITIAL_STAGGER = 1.2f;
 
     private static final float PERFECT_MIN = 0.46f;
     private static final float PERFECT_MAX = 0.58f;
@@ -256,7 +256,7 @@ public class CookingMinigame {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 attemptFlip(currentAlignedIndex());
                 if (allPattiesCookedWell()) {
-                    endRound(true, "All four patties cooked to perfection!");
+                    endRound(true, "All patties cooked to perfection!");
                     return;
                 }
             }
@@ -538,7 +538,7 @@ public class CookingMinigame {
             font.setColor(0.85f, 0.65f, 0.35f, 1f);
         } else if (state == GameState.RUNNING) {
             instrText =
-                "[A/D] or [\u2190/\u2192] move   \u2022   [SPACE] flip   \u2022   Cooked well: " +
+                "[Lef/Right] to move - [SPACE] flip - Cooked well: " +
                 countReady() +
                 "/" +
                 NUM_PATTIES;
