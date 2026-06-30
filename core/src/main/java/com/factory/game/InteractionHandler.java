@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
+import com.factory.game.Items.CookingMinigame;
+import com.factory.game.Items.CookingRecipe;
 import com.factory.game.Items.CraftingManager;
 import com.factory.game.Items.CrushingMinigame;
 import com.factory.game.Items.CrushingSelectionUI;
@@ -69,6 +71,7 @@ public class InteractionHandler {
     private final FurnaceSelectionUI furnaceSelectionUI;
     private final MixerUI mixerUI;
     private final FishingMinigame fishingMinigame;
+    private final CookingMinigame cookingMinigame;
     private final StorageCrateUI storageCrateUI;
     private final FilterPipeUI filterPipeUI;
     private final ItemFilterPipeUI itemFilterPipeUI;
@@ -109,6 +112,7 @@ public class InteractionHandler {
         CrushingSelectionUI crushingSelectionUI,
         FurnaceSelectionUI furnaceSelectionUI,
         FishingMinigame fishingMinigame,
+        CookingMinigame cookingMinigame,
         StorageCrateUI storageCrateUI,
         FilterPipeUI filterPipeUI,
         ItemFilterPipeUI itemFilterPipeUI,
@@ -141,6 +145,7 @@ public class InteractionHandler {
         this.furnaceSelectionUI = furnaceSelectionUI;
         this.mixerUI = mixerUI;
         this.fishingMinigame = fishingMinigame;
+        this.cookingMinigame = cookingMinigame;
         this.storageCrateUI = storageCrateUI;
         this.filterPipeUI = filterPipeUI;
         this.itemFilterPipeUI = itemFilterPipeUI;
@@ -167,6 +172,7 @@ public class InteractionHandler {
             siftMinigame.isActive() ||
             crushingMinigame.isActive() ||
             fishingMinigame.isActive() ||
+            cookingMinigame.isActive() ||
             solderingMinigame.isActive()
         ) return;
 
@@ -369,6 +375,18 @@ public class InteractionHandler {
                 furnaceSelectionUI.open();
                 return;
             }
+            if (world.getNearbyStove() != null && !inventoryUI.isVisible()) {
+                List<CookingRecipe> available =
+                    CraftingManager.getAvailableCookRecipes(
+                        player.getInventory()
+                    );
+                if (!available.isEmpty()) {
+                    CookingRecipe recipe = available.get(0);
+                    player.getInventory().removeItem(recipe.getInputItem(), 1);
+                    cookingMinigame.start(recipe);
+                }
+                return;
+            }
             if (world.getNearbyStorageCrate() != null) {
                 PlacedObject crate = world.getNearbyStorageCrate();
                 storageCrateUI.open(
@@ -454,6 +472,13 @@ public class InteractionHandler {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             dropSelectedItem();
+        }
+    }
+
+    public void pollCookingResult() {
+        CookingMinigame.CookResult result = cookingMinigame.pollResult();
+        if (result != null && result.success) {
+            player.getInventory().addItem(result.item, result.qty);
         }
     }
 
@@ -1056,6 +1081,31 @@ public class InteractionHandler {
         float bob = (float) Math.sin(totalTime * 3.5) * 4f;
 
         batch.setColor(1f, 0.52f, 0.08f, 0.92f);
+        batch.draw(
+            ePromptTexture,
+            screenX - iconSize * 0.5f,
+            screenY + 6f + bob,
+            iconSize,
+            iconSize
+        );
+        batch.setColor(1f, 1f, 1f, 1f);
+    }
+
+    public void drawStoveEPrompt(SpriteBatch batch, float totalTime) {
+        PlacedObject stove = world.getNearbyStove();
+        if (stove == null) return;
+
+        float worldPixelX =
+            stove.getX() * Main.TILE_SCALE + Main.TILE_SCALE * 0.5f;
+        float worldPixelY = stove.getY() * Main.TILE_SCALE + Main.TILE_SCALE;
+
+        float screenX = worldPixelX + camera.cameraX;
+        float screenY = worldPixelY + camera.cameraY;
+
+        float iconSize = 24f;
+        float bob = (float) Math.sin(totalTime * 3.5) * 4f;
+
+        batch.setColor(1f, 0.65f, 0.25f, 0.92f);
         batch.draw(
             ePromptTexture,
             screenX - iconSize * 0.5f,

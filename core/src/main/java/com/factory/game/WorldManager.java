@@ -54,6 +54,7 @@ public class WorldManager {
     private static final float CAVE_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
     private static final float CRUSH_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
     private static final float FURNACE_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
+    private static final float STOVE_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
     private static final float WATER_INTERACT_RANGE = 1.8f * Main.TILE_SCALE;
     private static final float CRATE_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
     private static final int CRATE_SLOTS = 24;
@@ -128,6 +129,7 @@ public class WorldManager {
     private WorldObject nearbyCaveObject = null;
     private PlacedObject nearbyCrushingPot = null;
     private PlacedObject nearbyFurnace = null;
+    private PlacedObject nearbyStove = null;
     private Ground_Tile nearbyWaterTile = null;
     private PlacedObject nearbyStorageCrate = null;
     private PlacedObject nearbyFilterPipe = null;
@@ -1336,6 +1338,28 @@ public class WorldManager {
         }
     }
 
+    public void findNearbyStove() {
+        nearbyStove = null;
+
+        float px = (-camera.cameraX + camera.VIRTUAL_WIDTH / 2f);
+        float py = (-camera.cameraY + camera.VIRTUAL_HEIGHT / 2f);
+
+        float bestDistSq = STOVE_INTERACT_RANGE * STOVE_INTERACT_RANGE;
+
+        for (PlacedObject obj : placedObjectLookup.values()) {
+            if (obj.type != PlacedObject.Type.STOVE) continue;
+            float ox = obj.getX() * Main.TILE_SCALE + Main.TILE_SCALE * 0.5f;
+            float oy = obj.getY() * Main.TILE_SCALE + Main.TILE_SCALE * 0.5f;
+            float dx = px - ox;
+            float dy = py - oy;
+            float dsq = dx * dx + dy * dy;
+            if (dsq < bestDistSq) {
+                bestDistSq = dsq;
+                nearbyStove = obj;
+            }
+        }
+    }
+
     public void findNearbyWaterTile() {
         nearbyWaterTile = null;
 
@@ -1931,6 +1955,10 @@ public class WorldManager {
 
     public PlacedObject getNearbyFurnace() {
         return nearbyFurnace;
+    }
+
+    public PlacedObject getNearbyStove() {
+        return nearbyStove;
     }
 
     public Ground_Tile getNearbyWaterTile() {

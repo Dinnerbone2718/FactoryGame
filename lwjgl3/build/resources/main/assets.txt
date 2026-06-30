@@ -16,8 +16,10 @@ hs_err_pid54580.log
 hs_err_pid54624.log
 hs_err_pid56892.log
 hs_err_pid61252.log
+hs_err_pid70288.log
 hs_err_pid71232.log
 hs_err_pid71952.log
 hs_err_pid72056.log
 hs_err_pid72172.log
+hs_err_pid72312.log
 hs_err_pid80412.log

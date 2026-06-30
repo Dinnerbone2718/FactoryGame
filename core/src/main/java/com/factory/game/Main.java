@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.factory.game.Items.CookingMinigame;
 import com.factory.game.Items.CraftingManager;
 import com.factory.game.Items.CrushingMinigame;
 import com.factory.game.Items.CrushingSelectionUI;
@@ -103,6 +104,7 @@ public class Main extends ApplicationAdapter {
     private GoblinoHutUI goblinoHutUI;
     private OreDrillUI oreDrillUI;
     private AnimalStatsUI animalStatsUI;
+    private CookingMinigame cookingMinigame;
 
     private Clock clock;
     private Hunger hunger;
@@ -193,6 +195,7 @@ public class Main extends ApplicationAdapter {
         chunkLoaderUI = new ChunkLoaderUI(minimap);
         goblinoHutManager = new GoblinoHutManager(seed);
         goblinoHutUI = new GoblinoHutUI(goblinoHutManager);
+        cookingMinigame = new CookingMinigame();
 
         clock = new Clock(this, camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
         hunger = new Hunger(camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
@@ -239,6 +242,7 @@ public class Main extends ApplicationAdapter {
             crushingSelectionUI,
             furnaceSelectionUI,
             fishingMinigame,
+            cookingMinigame,
             storageCrateUI,
             filterPipeUI,
             itemFilterPipeUI,
@@ -320,6 +324,7 @@ public class Main extends ApplicationAdapter {
         crushingMinigame.update(delta);
         furnaceMinigame.update(delta);
         fishingMinigame.update(delta);
+        cookingMinigame.update(delta);
         solderingMinigame.update(delta);
         worldManager.tickDeltaSave(delta);
         worldManager.updateItemPipes(delta);
@@ -356,6 +361,7 @@ public class Main extends ApplicationAdapter {
             furnaceSelectionUI.isVisible() ||
             furnaceMinigame.isActive() ||
             fishingMinigame.isActive() ||
+            cookingMinigame.isActive() ||
             storageCrateUI.isVisible() ||
             filterPipeUI.isVisible() ||
             itemFilterPipeUI.isVisible() ||
@@ -375,6 +381,7 @@ public class Main extends ApplicationAdapter {
             worldManager.findNearbyCaveObject();
             worldManager.findNearbyCrushingPot();
             worldManager.findNearbyFurnace();
+            worldManager.findNearbyStove();
             worldManager.findNearbyWaterTile();
             worldManager.findNearbyStorageCrate();
             worldManager.findNearbyFilterPipe();
@@ -775,6 +782,12 @@ public class Main extends ApplicationAdapter {
             ) {
                 interactionHandler.drawFurnaceEPrompt(batch, totalTime);
             } else if (
+                worldManager.getNearbyStove() != null &&
+                !uiBlocking &&
+                !player.isOnRaft()
+            ) {
+                interactionHandler.drawStoveEPrompt(batch, totalTime);
+            } else if (
                 worldManager.getNearbyStorageCrate() != null &&
                 !uiBlocking &&
                 !player.isOnRaft()
@@ -978,6 +991,7 @@ public class Main extends ApplicationAdapter {
         furnaceSelectionUI.render(batch);
         furnaceMinigame.render(batch);
         fishingMinigame.render(batch);
+        cookingMinigame.render(batch);
         storageCrateUI.render(batch);
         filterPipeUI.render(batch);
         itemFilterPipeUI.render(batch);
@@ -1052,6 +1066,11 @@ public class Main extends ApplicationAdapter {
             player.getInventory().addItem(fishResult.item, fishResult.qty);
         }
 
+        CookingMinigame.CookResult cookResult = cookingMinigame.pollResult();
+        if (cookResult != null && cookResult.success) {
+            player.getInventory().addItem(cookResult.item, cookResult.qty);
+        }
+
         SolderingMinigame.SolderResult solderResult =
             solderingMinigame.pollResult();
         if (solderResult != null && solderResult.success) {
@@ -1077,6 +1096,7 @@ public class Main extends ApplicationAdapter {
         furnaceMinigame.resize(width, height);
         furnaceSelectionUI.resize(width, height);
         fishingMinigame.resize(width, height);
+        cookingMinigame.resize(width, height);
         storageCrateUI.resize(width, height);
         filterPipeUI.resize(width, height);
         itemFilterPipeUI.resize(width, height);
@@ -1119,6 +1139,7 @@ public class Main extends ApplicationAdapter {
         furnaceMinigame.dispose();
         furnaceSelectionUI.dispose();
         fishingMinigame.dispose();
+        cookingMinigame.dispose();
         storageCrateUI.dispose();
         filterPipeUI.dispose();
         itemFilterPipeUI.dispose();

@@ -199,6 +199,7 @@ public enum Item {
 
     //FISH
     FISH("Fish", "items/fish.png", true, 50, null),
+    COOKED_FISH("Cooked Fish", "items/cooked_fish.png", true, 50, null),
     DFISH1("Evil Goldfish", "items/dylan_fish1.png", true, 50, null),
     DFISH2("Blue Tang", "items/dylan_fish2.png", true, 50, null),
     DFISH3("Pygmy Swordfish", "items/dylan_fish3.png", true, 50, null),

@@ -13,6 +13,7 @@ public class CraftingManager {
     private static final List<CrushingRecipe> crushRecipes = new ArrayList<>();
     private static final List<SmeltingRecipe> smeltRecipes = new ArrayList<>();
     private static final List<FishingRecipe> fishRecipes = new ArrayList<>();
+    private static final List<CookingRecipe> cookRecipes = new ArrayList<>();
     private static final List<SolderingRecipe> solderingRecipes =
         new ArrayList<>();
     private static final List<PlanterRecipe> planterRecipes = new ArrayList<>();
@@ -565,6 +566,12 @@ public class CraftingManager {
     }
 
     static {
+        cookRecipes.add(
+            new CookingRecipe("Cooked Fish", Item.FISH, Item.COOKED_FISH, 1)
+        );
+    }
+
+    static {
         solderingRecipes.add(
             new SolderingRecipe("Circuit Board", Item.CIRCUIT_BOARD, 1)
                 .addInput(Item.EMPTY_CIRCUIT_BOARD, 1)
@@ -842,6 +849,10 @@ public class CraftingManager {
         return new ArrayList<>(fishRecipes);
     }
 
+    public static List<CookingRecipe> getAllCookRecipes() {
+        return new ArrayList<>(cookRecipes);
+    }
+
     public static List<SolderingRecipe> getAllSolderingRecipes() {
         return new ArrayList<>(solderingRecipes);
     }
@@ -935,6 +946,23 @@ public class CraftingManager {
     public static FishingRecipe getFishingRecipeFor(Item rod) {
         for (FishingRecipe r : fishRecipes) {
             if (r.getRodItem() == rod) return r;
+        }
+        return null;
+    }
+
+    public static List<CookingRecipe> getAvailableCookRecipes(
+        Inventory inventory
+    ) {
+        List<CookingRecipe> available = new ArrayList<>();
+        for (CookingRecipe r : cookRecipes) {
+            if (inventory.hasItem(r.getInputItem(), 1)) available.add(r);
+        }
+        return available;
+    }
+
+    public static CookingRecipe getCookRecipeFor(Item item) {
+        for (CookingRecipe r : cookRecipes) {
+            if (r.getInputItem() == item) return r;
         }
         return null;
     }
