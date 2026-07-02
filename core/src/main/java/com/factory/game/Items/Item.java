@@ -205,6 +205,14 @@ public enum Item {
     DFISH3("Pygmy Swordfish", "items/dylan_fish3.png", true, 50, null),
     DFISH4("The Amazing Mahi Mahi", "items/dylan_fish4.png", true, 50, null),
 
+    //FOOD
+    RAW_STEAK("Raw Steak", "items/raw_steak.png", true, 50, null),
+    COOKED_STEAK("Cooked Steak", "items/cooked_steak.png", true, 50, null),
+
+    //WEAPONS
+    RIFLE("Rifle", "items/rifle.png", false, 1, ItemClass.RIFLE),
+    RIFLE_AMMO("Rifle Ammo", "items/rifle_ammo.png", true, 50, null),
+
     //MACHINES
     DISTILLERY("Distillery", "items/distillery.png", false, 1, null),
     WELL("Well", "items/well.png", false, 1, null),

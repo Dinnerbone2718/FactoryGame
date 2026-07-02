@@ -106,6 +106,12 @@ public class Player {
         inventory.addItem(Item.FISH, 1);
         inventory.addItem(Item.STOVE, 1);
 
+        inventory.addItem(Item.RAW_STEAK, 1);
+        inventory.addItem(Item.COOKED_STEAK, 1);
+
+        inventory.addItem(Item.RIFLE, 1);
+        inventory.addItem(Item.RIFLE_AMMO, 10);
+
         loadTexture();
     }
 

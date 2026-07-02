@@ -1,7 +1,5 @@
 package com.factory.game.Items;
 
-
-
 public enum ItemClass {
     HAND,
     AXE,
@@ -9,5 +7,7 @@ public enum ItemClass {
     SHOVEL,
     SIFT,
     FISHING_ROD,
-    TOOL
+    TOOL,
+    RIFLE,
+    SHOTGUN,
 }

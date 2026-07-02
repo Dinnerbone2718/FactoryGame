@@ -35,6 +35,10 @@ public class CraftingManager {
         foodRecipes.add(new FoodManager(Item.DFISH4, 40, 10));
         foodRecipes.add(new FoodManager(Item.QUALE, 15, 10));
         foodRecipes.add(new FoodManager(Item.SODA, 5, 50));
+        foodRecipes.add(new FoodManager(Item.COOKED_FISH, 40, 0));
+
+        foodRecipes.add(new FoodManager(Item.RAW_STEAK, 30, 0));
+        foodRecipes.add(new FoodManager(Item.COOKED_STEAK, 60, 0));
     }
 
     static {
