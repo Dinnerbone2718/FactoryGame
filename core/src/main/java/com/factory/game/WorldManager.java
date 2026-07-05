@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.World;
+import com.factory.game.Items.AnimalDrops;
 import com.factory.game.Items.DroppedItem;
 import com.factory.game.Items.Inventory;
 import com.factory.game.Items.InventoryUI;
+import com.factory.game.Items.Item;
 import com.factory.game.Items.ItemStack;
 import com.factory.game.Renderer.FireFlyParticleEmitter;
 import com.factory.game.Renderer.LightRenderer;
@@ -832,6 +834,26 @@ public class WorldManager {
         for (List<Animal> animals : animalsByChunk.values()) {
             for (Animal animal : animals) {
                 animal.update(delta, this::isBlockedAt, this);
+
+                if (animal.isDead()) {
+                    AnimalDrops drops = animal.getAnimalDropFromAnimal(
+                        animal.type
+                    );
+
+                    int amount = respawnRng.nextInt(4);
+
+                    for (int i = 0; i < amount; i++) {
+                        Item result = drops.roll(respawnRng);
+                        ItemStack stack = new ItemStack(result, 1);
+                        droppedItems.add(
+                            DroppedItem.spawnBurst(
+                                stack,
+                                animal.getWorldX(),
+                                animal.getWorldY()
+                            )
+                        );
+                    }
+                }
             }
 
             animals.removeIf(animal -> animal.shouldBeDead());

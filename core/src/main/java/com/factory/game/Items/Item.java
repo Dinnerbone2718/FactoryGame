@@ -196,6 +196,8 @@ public enum Item {
     PAPER("Paper", "items/paper.png", true, 50, null),
     STRING("String", "items/string.png", true, 50, null),
     SODA("Soda", "items/soda.png", true, 50, null),
+    LEATHER("Leather", "items/leather.png", true, 50, null),
+    TOOTH("Tooth", "items/tooth.png", true, 50, null),
 
     //FISH
     FISH("Fish", "items/fish.png", true, 50, null),
@@ -212,6 +214,8 @@ public enum Item {
     //WEAPONS
     RIFLE("Rifle", "items/rifle.png", false, 1, ItemClass.RIFLE),
     RIFLE_AMMO("Rifle Ammo", "items/rifle_ammo.png", true, 50, null),
+    SHOTGUN("Shotgun", "items/shotgun.png", false, 1, ItemClass.SHOTGUN),
+    SHOTGUN_AMMO("Shotgun Ammo", "items/shotgun_ammo.png", true, 50, null),
 
     //MACHINES
     DISTILLERY("Distillery", "items/distillery.png", false, 1, null),

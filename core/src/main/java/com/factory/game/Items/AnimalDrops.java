@@ -1,32 +1,25 @@
 package com.factory.game.Items;
 
+import com.factory.game.World.Animal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FishingRecipe {
+public class AnimalDrops {
 
-    private final Item rodItem;
     private final List<Item> outputs = new ArrayList<>();
     private final List<Integer> weights = new ArrayList<>();
     private int totalWeight = 0;
+    private Animal.Type animalType;
 
-    private FishingMinigame.Difficulty difficulty =
-        FishingMinigame.Difficulty.MEDIUM;
-
-    public FishingRecipe(Item rodItem) {
-        this.rodItem = rodItem;
+    public AnimalDrops(Animal.Type animalType) {
+        this.animalType = animalType;
     }
 
-    public FishingRecipe addOutput(Item item, int weight) {
+    public AnimalDrops addOutput(Item item, int weight) {
         outputs.add(item);
         weights.add(weight);
         totalWeight += weight;
-        return this;
-    }
-
-    public FishingRecipe setDifficulty(FishingMinigame.Difficulty difficulty) {
-        this.difficulty = difficulty;
         return this;
     }
 
@@ -44,10 +37,6 @@ public class FishingRecipe {
         return totalWeight == 0 ? 0f : (weights.get(i) * 100f) / totalWeight;
     }
 
-    public Item getRodItem() {
-        return rodItem;
-    }
-
     public List<Item> getOutputs() {
         return outputs;
     }
@@ -60,7 +49,7 @@ public class FishingRecipe {
         return totalWeight;
     }
 
-    public FishingMinigame.Difficulty getDifficulty() {
-        return difficulty;
+    public Animal.Type getAnimalType() {
+        return animalType;
     }
 }

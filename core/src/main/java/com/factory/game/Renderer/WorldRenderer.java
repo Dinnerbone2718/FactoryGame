@@ -15,6 +15,8 @@ import com.factory.game.Main;
 import com.factory.game.PenguinDude;
 import com.factory.game.Player;
 import com.factory.game.PooDude;
+import com.factory.game.RifleController;
+import com.factory.game.ShotgunController;
 import com.factory.game.World.Animal;
 import com.factory.game.World.Chunk;
 import com.factory.game.World.ObjectSpriteCache;
@@ -92,7 +94,9 @@ public class WorldRenderer {
         PenguinDude penguinDude,
         PooDude pooDude,
         List<Animal> animals,
-        List<Bubble> bubbles
+        List<Bubble> bubbles,
+        RifleController rifleController,
+        ShotgunController shotgunController
     ) {
         totalTime += delta;
 
@@ -189,10 +193,20 @@ public class WorldRenderer {
                 batch,
                 camera
             );
-            else if (entity instanceof Player) ((Player) entity).draw(
-                batch,
-                camera
-            );
+            else if (entity instanceof Player) {
+                boolean drawBehind =
+                    rifleController.shouldDrawRifleBehindPlayer() ||
+                    shotgunController.shouldDrawShotgunBehindPlayer();
+                if (drawBehind) {
+                    rifleController.drawRifle(batch);
+                    shotgunController.drawShotgun(batch);
+                    ((Player) entity).draw(batch, camera);
+                } else {
+                    ((Player) entity).draw(batch, camera);
+                    rifleController.drawRifle(batch);
+                    shotgunController.drawShotgun(batch);
+                }
+            }
         }
 
         liquidUI.render(batch, chunks, camera);

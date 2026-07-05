@@ -1,5 +1,6 @@
 package com.factory.game.Items;
 
+import com.factory.game.World.Animal;
 import com.factory.game.World.DistilleryRecipe;
 import com.factory.game.World.LiquidType;
 import com.factory.game.World.MixingRecipe;
@@ -26,6 +27,26 @@ public class CraftingManager {
     private static final List<GoblinoGiftRecipe> goblinoGiftRecipes =
         new ArrayList<>();
     private static final List<FoodManager> foodRecipes = new ArrayList<>();
+
+    private static final List<AnimalDrops> animalDrops = new ArrayList<>();
+
+    static {
+        animalDrops.add(
+            new AnimalDrops(Animal.Type.COW)
+                .addOutput(Item.RAW_STEAK, 80)
+                .addOutput(Item.LEATHER, 20)
+        );
+
+        animalDrops.add(
+            new AnimalDrops(Animal.Type.WOLF)
+                .addOutput(Item.LEATHER, 20)
+                .addOutput(Item.TOOTH, 80)
+        );
+
+        animalDrops.add(
+            new AnimalDrops(Animal.Type.ARMADILLO).addOutput(Item.LEATHER, 20)
+        );
+    }
 
     static {
         foodRecipes.add(new FoodManager(Item.FISH, 20, 0));
@@ -721,7 +742,7 @@ public class CraftingManager {
         );
         goblinoBarterRecipes.add(
             new GoblinoBarterRecipe(
-                "Ore Refinement",
+                "Ore Trade",
                 Item.RAW_OREMINUM,
                 6,
                 Item.RAW_ROCKITE,
@@ -757,7 +778,7 @@ public class CraftingManager {
         );
         goblinoBarterRecipes.add(
             new GoblinoBarterRecipe(
-                "Stone Prospecting",
+                "Stone Searching",
                 Item.STONE,
                 24,
                 Item.RAW_ORE,
@@ -775,7 +796,7 @@ public class CraftingManager {
         );
         goblinoBarterRecipes.add(
             new GoblinoBarterRecipe(
-                "Composite Deal",
+                "Ore Trade",
                 Item.OREMINUM_INGOT,
                 30,
                 Item.COMPOSITE_INGOT,
@@ -784,7 +805,7 @@ public class CraftingManager {
         );
         goblinoBarterRecipes.add(
             new GoblinoBarterRecipe(
-                "Evil Fish Premium",
+                "Evil Fish Deak",
                 Item.DFISH1,
                 1,
                 Item.GOBLINO_COIN,
@@ -804,10 +825,10 @@ public class CraftingManager {
 
     static {
         goblinoGiftRecipes.add(
-            new GoblinoGiftRecipe(Item.FISH, 1, 3, "Mmm tasty!")
+            new GoblinoGiftRecipe(Item.FISH, 1, 3, "Yummy!")
         );
         goblinoGiftRecipes.add(
-            new GoblinoGiftRecipe(Item.DFISH1, 1, 4, "Goblino is delighted.")
+            new GoblinoGiftRecipe(Item.DFISH1, 1, 4, "Goblino is horny.")
         );
         goblinoGiftRecipes.add(
             new GoblinoGiftRecipe(Item.DFISH4, 1, 8, "THE AMAZING MAHI MAHI!")
@@ -817,19 +838,14 @@ public class CraftingManager {
                 Item.PENGUIN_PLUSH,
                 1,
                 12,
-                "BEST GIFT EVER!! Goblino clutches it with both hands!"
+                "Goblino pulls down his pants and shows you his penguin tattoo. He is very happy."
             )
         );
         goblinoGiftRecipes.add(
             new GoblinoGiftRecipe(Item.QUALE, 1, 1, "Yummers....")
         );
         goblinoGiftRecipes.add(
-            new GoblinoGiftRecipe(
-                Item.CACTI_FLOWER,
-                1,
-                3,
-                "Pretty! But ouchy..."
-            )
+            new GoblinoGiftRecipe(Item.CACTI_FLOWER, 1, 3, "Pretty!")
         );
     }
 
@@ -1047,6 +1063,13 @@ public class CraftingManager {
     public static FoodManager getFoodManagerFor(Item item) {
         for (FoodManager f : foodRecipes) {
             if (f.getItem() == item) return f;
+        }
+        return null;
+    }
+
+    public static AnimalDrops getAnimalDropFromAnimal(Animal.Type animalType) {
+        for (AnimalDrops a : animalDrops) {
+            if (a.getAnimalType() == animalType) return a;
         }
         return null;
     }

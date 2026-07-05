@@ -112,6 +112,9 @@ public class Player {
         inventory.addItem(Item.RIFLE, 1);
         inventory.addItem(Item.RIFLE_AMMO, 10);
 
+        inventory.addItem(Item.SHOTGUN, 1);
+        inventory.addItem(Item.SHOTGUN_AMMO, 10);
+
         loadTexture();
     }
 

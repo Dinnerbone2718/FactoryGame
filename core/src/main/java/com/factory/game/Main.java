@@ -105,6 +105,8 @@ public class Main extends ApplicationAdapter {
     private OreDrillUI oreDrillUI;
     private AnimalStatsUI animalStatsUI;
     private CookingMinigame cookingMinigame;
+    private RifleController rifleController;
+    private ShotgunController shotgunController;
 
     private Clock clock;
     private Hunger hunger;
@@ -228,6 +230,20 @@ public class Main extends ApplicationAdapter {
         oreDrillUI = new OreDrillUI(worldManager.getOreDrillManager());
 
         animalStatsUI = new AnimalStatsUI(worldManager);
+
+        rifleController = new RifleController(
+            player,
+            camera,
+            worldManager,
+            inventoryUI
+        );
+
+        shotgunController = new ShotgunController(
+            player,
+            camera,
+            worldManager,
+            inventoryUI
+        );
 
         worldManager.setMinimap(minimap);
 
@@ -375,6 +391,16 @@ public class Main extends ApplicationAdapter {
             chunkLoaderUI.isVisible() ||
             goblinoHutUI.isVisible() ||
             oreDrillUI.isVisible();
+
+        rifleController.update(
+            delta,
+            uiBlocking || player.isOnRaft() || animalStatsUI.isVisible()
+        );
+
+        shotgunController.update(
+            delta,
+            uiBlocking || player.isOnRaft() || animalStatsUI.isVisible()
+        );
 
         if (!uiBlocking) {
             worldManager.manageActiveChunks();
@@ -664,7 +690,9 @@ public class Main extends ApplicationAdapter {
             penguinDude,
             pooDude,
             worldManager.getAnimals(),
-            worldManager.getBubbles()
+            worldManager.getBubbles(),
+            rifleController,
+            shotgunController
         );
         renderer.getLightRenderer().render(camera);
 
@@ -992,6 +1020,8 @@ public class Main extends ApplicationAdapter {
         furnaceMinigame.render(batch);
         fishingMinigame.render(batch);
         cookingMinigame.render(batch);
+        rifleController.render(batch);
+        shotgunController.render(batch);
         storageCrateUI.render(batch);
         filterPipeUI.render(batch);
         itemFilterPipeUI.render(batch);
@@ -1114,6 +1144,8 @@ public class Main extends ApplicationAdapter {
         goblinoHutUI.resize(width, height);
         oreDrillUI.resize(width, height);
         animalStatsUI.resize(width, height);
+        rifleController.resize(width, height);
+        shotgunController.resize(width, height);
         if (CREATIVE_MODE && devConsole != null) devConsole.resize(
             width,
             height
@@ -1158,6 +1190,8 @@ public class Main extends ApplicationAdapter {
         goblinoHutUI.dispose();
         oreDrillUI.dispose();
         animalStatsUI.dispose();
+        rifleController.dispose();
+        shotgunController.dispose();
         hunger.dispose();
         if (CREATIVE_MODE && devConsole != null) devConsole.dispose();
     }

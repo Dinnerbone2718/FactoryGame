@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.factory.game.Camera;
+import com.factory.game.Items.AnimalDrops;
+import com.factory.game.Items.CraftingManager;
 import com.factory.game.Main;
 import com.factory.game.WorldManager;
 import java.util.List;
@@ -1326,6 +1328,10 @@ public class Animal {
 
     private static float clamp01(float v) {
         return Math.max(0f, Math.min(1f, v));
+    }
+
+    public static AnimalDrops getAnimalDropFromAnimal(Animal.Type animalType) {
+        return CraftingManager.getAnimalDropFromAnimal(animalType);
     }
 
     public float getWorldX() {
