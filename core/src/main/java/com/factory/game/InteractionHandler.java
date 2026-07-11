@@ -549,7 +549,7 @@ public class InteractionHandler {
             }
             activePlacedHarvestTarget = placed;
 
-            HarvestResult result = placed.tryHit(toolClass);
+            HarvestResult result = placed.tryHit(toolClass, getHeldItem());
             switch (result) {
                 case NOT_HARVESTABLE:
                     break;
@@ -562,7 +562,7 @@ public class InteractionHandler {
                             "Requires a " +
                             pDef.getRequiredToolClass().name().toLowerCase() +
                             "!";
-                        wrongToolMessageTime = WRONG_TOOL_MESSAGE_DURATION;
+                        System.out.println(wrongToolMessage);
                     }
                     break;
                 }
@@ -586,7 +586,7 @@ public class InteractionHandler {
         }
         activeHarvestTarget = obj;
 
-        HarvestResult result = obj.tryHit(toolClass);
+        HarvestResult result = obj.tryHit(toolClass, getHeldItem());
         switch (result) {
             case NOT_HARVESTABLE:
                 break;
@@ -598,7 +598,7 @@ public class InteractionHandler {
                         "Requires a " +
                         def.getRequiredToolClass().name().toLowerCase() +
                         "!";
-                    wrongToolMessageTime = WRONG_TOOL_MESSAGE_DURATION;
+                    System.out.println(wrongToolMessage);
                 }
                 break;
             }
@@ -1752,5 +1752,12 @@ public class InteractionHandler {
             iconSize
         );
         batch.setColor(1f, 1f, 1f, 1f);
+    }
+
+    public Item getHeldItem() {
+        int sel = inventoryUI.getSelectedSlot();
+        if (sel < 0) return null;
+        ItemStack stack = player.getInventory().getSlot(sel);
+        return stack != null ? stack.getItem() : null;
     }
 }

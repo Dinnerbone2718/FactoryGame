@@ -26,6 +26,7 @@ public enum Item {
     WOOD_PLANKS("Wood Planks", "items/wood_planks.png", true, 50, null),
     TOILET("Toilet", "items/toilet.png", true, 50, null),
     LAMP_POST("Lamp Post", "items/lamp_post.png", true, 50, null),
+    HEDGE("Hedge", "items/hedge.png", true, 50, null),
 
     //UNIQUE WORLD THINGS
     RAFT("Raft", "items/raft.png", false, 1, null),

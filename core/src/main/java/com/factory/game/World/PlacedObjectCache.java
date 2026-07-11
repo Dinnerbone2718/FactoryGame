@@ -1601,6 +1601,26 @@ public final class PlacedObjectCache {
                 true
             )
         );
+
+        CONFIGS.put(
+            PlacedObject.Type.HEDGE,
+            new SpriteConfig(
+                "tileset/Wall/hedge.png",
+                3,
+                0,
+                RenderMode.WALL,
+                0,
+                16f,
+                16f,
+                0f,
+                0f,
+                14,
+                14,
+                1,
+                1,
+                true
+            )
+        );
     }
 
     private static final Map<PlacedObject.Type, Texture> textures =

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.factory.game.Camera;
 import com.factory.game.Items.Item;
+import com.factory.game.Items.ItemDamage;
 import com.factory.game.Items.ItemStack;
 import com.factory.game.Main;
 import com.factory.game.Renderer.FireParticleEmitter;
@@ -72,6 +73,7 @@ public class PlacedObject {
         ORE_DRILL,
         FILTER_ITEM_PIPE,
         STOVE,
+        HEDGE,
     }
 
     public final Type type;
@@ -619,12 +621,21 @@ public class PlacedObject {
         );
     }
 
-    public HarvestResult tryHit(com.factory.game.Items.ItemClass toolClass) {
+    public HarvestResult tryHit(
+        com.factory.game.Items.ItemClass toolClass,
+        Item heldItem
+    ) {
         HarvestDefinition def = PlacedHarvestRegistry.get(type);
         if (def == null) return HarvestResult.NOT_HARVESTABLE;
         if (!def.canHarvest(toolClass)) return HarvestResult.WRONG_TOOL;
 
-        hitsReceived++;
+        if (ItemDamage.containsKey(heldItem)) {
+            hitsReceived += ItemDamage.getDamage(heldItem);
+            System.out.println("Hit received: " + hitsReceived);
+        } else {
+            hitsReceived++;
+        }
+
         shakeTimer = SHAKE_DURATION;
 
         return (hitsReceived >= def.getHitsRequired())

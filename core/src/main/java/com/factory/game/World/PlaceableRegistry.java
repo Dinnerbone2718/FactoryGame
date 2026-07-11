@@ -234,6 +234,11 @@ public final class PlaceableRegistry {
             Item.STOVE,
             new PlaceableDefinition(PlacedObject.Type.STOVE, 1)
         );
+
+        REGISTRY.put(
+            Item.HEDGE,
+            new PlaceableDefinition(PlacedObject.Type.HEDGE, 1)
+        );
     }
 
     public static PlaceableDefinition get(Item item) {

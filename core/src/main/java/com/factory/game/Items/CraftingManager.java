@@ -465,6 +465,10 @@ public class CraftingManager {
                 .addInput(Item.CIRCUIT_BOARD_ADVANCED, 2)
                 .addInput(Item.ROCKITE_INGOT, 4)
         );
+
+        recipes.add(
+            new CraftingRecipe("Hedge", Item.HEDGE, 1).addInput(Item.LEAF, 5)
+        );
     }
 
     static {

@@ -406,6 +406,24 @@ public final class PlacedHarvestRegistry {
                 new DropTable().addDrop(Item.FILTER_ITEM_PIPE, 1, 1, 1.0f)
             )
         );
+
+        REGISTRY.put(
+            PlacedObject.Type.HEDGE,
+            new HarvestDefinition(
+                null,
+                2,
+                new DropTable().addDrop(Item.HEDGE, 1, 1, 1.0f)
+            )
+        );
+
+        REGISTRY.put(
+            PlacedObject.Type.STOVE,
+            new HarvestDefinition(
+                null,
+                3,
+                new DropTable().addDrop(Item.STOVE, 1, 1, 1.0f)
+            )
+        );
     }
 
     public static HarvestDefinition get(PlacedObject.Type type) {

@@ -105,6 +105,8 @@ public class Player {
         inventory.addItem(Item.STOVE, 1);
         inventory.addItem(Item.DEVBARREL, 1);
 
+        inventory.addItem(Item.HEDGE, 20);
+
         loadTexture();
     }
 
