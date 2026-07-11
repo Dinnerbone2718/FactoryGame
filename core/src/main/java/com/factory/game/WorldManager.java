@@ -19,6 +19,7 @@ import com.factory.game.World.Chunk;
 import com.factory.game.World.ChunkLoader;
 import com.factory.game.World.ChunkLoader.RawChunkData;
 import com.factory.game.World.CrusherManager;
+import com.factory.game.World.DistilleryRecipe;
 import com.factory.game.World.GoblinoHutManager;
 import com.factory.game.World.Ground_Tile;
 import com.factory.game.World.ItemPipeConfig;
@@ -49,8 +50,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldManager {
 
-    private static final int LOAD_RADIUS = 10;
-    private static final int UNLOAD_RADIUS = 11;
+    private static final int LOAD_RADIUS = 2; //10;
+    private static final int UNLOAD_RADIUS = 3; //11;
     private static final int RENDER_RADIUS = 3;
     private static final int MAX_PROMOTE_PER_FRAME = 4;
     private static final float CAVE_INTERACT_RANGE = 1.2f * Main.TILE_SCALE;
@@ -99,6 +100,8 @@ public class WorldManager {
         new ConcurrentHashMap<>();
 
     private final Map<String, List<Animal>> animalsByChunk = new HashMap<>();
+    private final Set<String> animalSpawnedChunks =
+        ConcurrentHashMap.newKeySet();
 
     private final Map<String, Float> objectRespawnTimers = new HashMap<>();
     private final Random respawnRng = new Random();
@@ -322,7 +325,10 @@ public class WorldManager {
                 restoreItemFilterPipe(po, rec);
                 restoreDevBarrel(po, rec);
                 restoreMixer(po, rec);
+                restoreDistillery(po, rec);
+                restoreChunkLoaderPins(po, rec);
                 restoreCrateInventory(rec);
+                restoreMachineInventory(po, rec);
                 restoreLiquid(po, rec);
                 restoreItemPipeConfig(rec);
                 chunk.addPlacedObject(po, renderer.getLightRenderer());
@@ -464,8 +470,12 @@ public class WorldManager {
                 restoreItemFilterPipe(po, rec);
                 restoreDevBarrel(po, rec);
                 restoreMixer(po, rec);
+                restoreDistillery(po, rec);
+                restoreChunkLoaderPins(po, rec);
                 restoreCrateInventory(rec);
+                restoreMachineInventory(po, rec);
                 restoreLiquid(po, rec);
+                restoreItemPipeConfig(rec);
                 chunk.addPlacedObject(po, renderer.getLightRenderer());
                 if (po.isPipe()) {
                     pipeLookup.put(rec.x + "," + rec.y, po);
@@ -534,6 +544,40 @@ public class WorldManager {
                 continue;
             }
 
+            if (obj.isDistillery()) {
+                LiquidTank[] inputs = obj.getDistilleryInputTanks();
+                LiquidTank[] outputs = obj.getDistilleryOutputTanks();
+                float[] inputAmounts = null;
+                float[] outputAmounts = null;
+                if (inputs != null) {
+                    inputAmounts = new float[inputs.length];
+                    for (int i = 0; i < inputs.length; i++) inputAmounts[i] =
+                        inputs[i].getAmount();
+                }
+                if (outputs != null) {
+                    outputAmounts = new float[outputs.length];
+                    for (int i = 0; i < outputs.length; i++) outputAmounts[i] =
+                        outputs[i].getAmount();
+                }
+                if (inputAmounts != null || outputAmounts != null) {
+                    delta.updateDistilleryTanks(
+                        obj.getX(),
+                        obj.getY(),
+                        inputAmounts,
+                        outputAmounts
+                    );
+                }
+                continue;
+            }
+
+            if (obj.type == PlacedObject.Type.CHUNK_LOADER) {
+                delta.updateChunkLoaderPins(
+                    obj.getX(),
+                    obj.getY(),
+                    obj.getPinnedChunkKeys()
+                );
+            }
+
             LiquidTank tank = obj.getLiquidTank();
             if (tank == null) continue;
             delta.updateLiquid(
@@ -554,6 +598,13 @@ public class WorldManager {
         }
     }
 
+    public void flushLiveStateToDeltas() {
+        for (Chunk chunk : loadedChunks.values()) {
+            snapshotLiquids(chunk);
+            snapshotCrates(chunk);
+        }
+    }
+
     private void snapshotCrates(Chunk chunk) {
         WorldDelta delta = activeDelta();
         int chunkX = chunk.getChunkX();
@@ -570,15 +621,22 @@ public class WorldManager {
                 Math.floorDiv(obj.getX(), Main.CHUNK_SIZE) != chunkX ||
                 Math.floorDiv(obj.getY(), Main.CHUNK_SIZE) != chunkY
             ) continue;
+            Inventory inv;
             if (
-                obj.type != PlacedObject.Type.STORAGE_CRATE &&
-                obj.type != PlacedObject.Type.FOREST_CRATE &&
-                obj.type != PlacedObject.Type.DESERT_CRATE &&
-                obj.type != PlacedObject.Type.MOUNTAIN_CRATE
-            ) continue;
+                obj.type == PlacedObject.Type.STORAGE_CRATE ||
+                obj.type == PlacedObject.Type.FOREST_CRATE ||
+                obj.type == PlacedObject.Type.DESERT_CRATE ||
+                obj.type == PlacedObject.Type.MOUNTAIN_CRATE
+            ) {
+                inv = crateInventories.get(obj.getX() + "," + obj.getY());
+            } else if (obj.type == PlacedObject.Type.CRUSHER) {
+                inv = crusherManager.getInventory(obj);
+            } else if (obj.type == PlacedObject.Type.ORE_DRILL) {
+                inv = oreDrillManager.getInventory(obj);
+            } else {
+                continue;
+            }
 
-            String key = obj.getX() + "," + obj.getY();
-            Inventory inv = crateInventories.get(key);
             if (inv == null) continue;
             ItemStack[] contents = new ItemStack[inv.getSize()];
             for (int i = 0; i < inv.getSize(); i++) contents[i] = inv.getSlot(
@@ -666,6 +724,99 @@ public class WorldManager {
         }
     }
 
+    private static void restoreDistillery(
+        PlacedObject po,
+        WorldDelta.PlacedRecord rec
+    ) {
+        if (po.type != PlacedObject.Type.DISTILLERY) return;
+        if (
+            rec.distilleryRecipeOrdinal < 0 ||
+            rec.distilleryRecipeOrdinal >= DistilleryRecipe.ALL.size()
+        ) return;
+
+        DistilleryRecipe recipe = DistilleryRecipe.ALL.get(
+            rec.distilleryRecipeOrdinal
+        );
+        po.setSelectedDistilleryRecipe(recipe);
+
+        LiquidTank[] inputTanks = po.getDistilleryInputTanks();
+        if (inputTanks != null && rec.distilleryInputAmounts != null) {
+            java.util.List<DistilleryRecipe.InputSpec> specs =
+                recipe.getInputs();
+            for (
+                int i = 0;
+                i < inputTanks.length &&
+                i < rec.distilleryInputAmounts.length &&
+                i < specs.size();
+                i++
+            ) {
+                if (rec.distilleryInputAmounts[i] > 0f) {
+                    inputTanks[i].deposit(
+                        specs.get(i).type,
+                        rec.distilleryInputAmounts[i]
+                    );
+                }
+            }
+        }
+
+        LiquidTank[] outputTanks = po.getDistilleryOutputTanks();
+        if (outputTanks != null && rec.distilleryOutputAmounts != null) {
+            java.util.List<DistilleryRecipe.OutputSpec> specs =
+                recipe.getOutputs();
+            for (
+                int i = 0;
+                i < outputTanks.length &&
+                i < rec.distilleryOutputAmounts.length &&
+                i < specs.size();
+                i++
+            ) {
+                if (rec.distilleryOutputAmounts[i] > 0f) {
+                    outputTanks[i].deposit(
+                        specs.get(i).type,
+                        rec.distilleryOutputAmounts[i]
+                    );
+                }
+            }
+        }
+    }
+
+    private static void restoreChunkLoaderPins(
+        PlacedObject po,
+        WorldDelta.PlacedRecord rec
+    ) {
+        if (po.type != PlacedObject.Type.CHUNK_LOADER) return;
+        if (rec.chunkLoaderPinnedKeys == null) return;
+        po.setPinnedChunkKeys(
+            new java.util.HashSet<>(
+                java.util.Arrays.asList(rec.chunkLoaderPinnedKeys)
+            )
+        );
+    }
+
+    private void restoreMachineInventory(
+        PlacedObject po,
+        WorldDelta.PlacedRecord rec
+    ) {
+        if (rec.crateContents == null) return;
+
+        Inventory inv;
+        if (po.type == PlacedObject.Type.CRUSHER) {
+            inv = crusherManager.getOrCreateInventory(po);
+        } else if (po.type == PlacedObject.Type.ORE_DRILL) {
+            inv = oreDrillManager.getOrCreateInventory(po);
+        } else {
+            return;
+        }
+
+        for (
+            int i = 0;
+            i < rec.crateContents.length && i < inv.getSize();
+            i++
+        ) {
+            inv.setSlot(i, rec.crateContents[i]);
+        }
+    }
+
     private void restoreCrateInventory(WorldDelta.PlacedRecord rec) {
         if (
             rec.type != PlacedObject.Type.STORAGE_CRATE &&
@@ -749,6 +900,8 @@ public class WorldManager {
     }
 
     private void spawnAnimalsForChunk(Chunk chunk) {
+        if (!animalSpawnedChunks.add(chunk.key())) return;
+
         List<Animal> animals = null;
 
         for (Ground_Tile tile : chunk.getTiles()) {
@@ -1802,6 +1955,64 @@ public class WorldManager {
         return inCave ? caveDelta : surfaceDelta;
     }
 
+    public WorldDelta getSurfaceDelta() {
+        return surfaceDelta;
+    }
+
+    public WorldDelta getCaveDelta() {
+        return caveDelta;
+    }
+
+    public Set<String> getAnimalSpawnedChunks() {
+        return animalSpawnedChunks;
+    }
+
+    public void applyLoadedWorld(
+        WorldDelta newSurfaceDelta,
+        WorldDelta newCaveDelta,
+        List<Animal> restoredAnimals,
+        Set<String> restoredSpawnedChunks
+    ) {
+        loadedChunks.clear();
+        savedSurfaceChunks.clear();
+        placedObjectLookup.clear();
+        floorLookup.clear();
+        pipeLookup.clear();
+        animalsByChunk.clear();
+        crateInventories.clear();
+        worldTileLookup.clear();
+        objectHitboxes.clear();
+        worldObjectLookup.clear();
+        objectRespawnTimers.clear();
+
+        inCave = false;
+        surfaceDelta = newSurfaceDelta;
+        caveDelta = newCaveDelta;
+
+        animalSpawnedChunks.clear();
+        if (restoredSpawnedChunks != null) animalSpawnedChunks.addAll(
+            restoredSpawnedChunks
+        );
+
+        if (restoredAnimals != null) {
+            for (Animal animal : restoredAnimals) {
+                int tileX = (int) Math.floor(
+                    animal.getWorldX() / Main.TILE_SCALE
+                );
+                int tileY = (int) Math.floor(
+                    animal.getWorldY() / Main.TILE_SCALE
+                );
+                int chunkX = Math.floorDiv(tileX, Main.CHUNK_SIZE);
+                int chunkY = Math.floorDiv(tileY, Main.CHUNK_SIZE);
+                animalsByChunk
+                    .computeIfAbsent(Chunk.key(chunkX, chunkY), k ->
+                        new ArrayList<>()
+                    )
+                    .add(animal);
+            }
+        }
+    }
+
     public void saveDeltasAsync() {
         deltaSavePending = true;
     }
@@ -1812,6 +2023,7 @@ public class WorldManager {
         if (deltaSaveTimer > 0f) return;
         deltaSaveTimer = DELTA_SAVE_INTERVAL;
         deltaSavePending = false;
+        flushLiveStateToDeltas();
         Thread t = new Thread(
             () -> {
                 surfaceDelta.save(SURFACE_DELTA_PATH);
@@ -1899,10 +2111,7 @@ public class WorldManager {
 
     public void dispose() {
         if (Main.PERSIST_DATA) {
-            for (Chunk chunk : loadedChunks.values()) {
-                snapshotCrates(chunk);
-                snapshotLiquids(chunk);
-            }
+            flushLiveStateToDeltas();
             surfaceDelta.save(SURFACE_DELTA_PATH);
             caveDelta.save(CAVE_DELTA_PATH);
         }

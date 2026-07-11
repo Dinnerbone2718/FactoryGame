@@ -79,41 +79,31 @@ public class Player {
 
         inventory.addItem(Item.WRENCH_AND_SCREW, 1);
 
-        inventory.addItem(Item.WOOD_FLOOR, 50);
-        inventory.addItem(Item.STONE_FLOOR, 50);
-        inventory.addItem(Item.STONE_WALL, 50);
-        inventory.addItem(Item.WALL, 50);
         inventory.addItem(Item.BASIC_PIPE, 50);
-        inventory.addItem(Item.STONE_WALL_FULL, 50);
+        inventory.addItem(Item.FILTER_PIPE, 50);
 
+        inventory.addItem(Item.FILTER_ITEM_PIPE, 50);
+        inventory.addItem(Item.ITEM_PIPE, 50);
+
+        inventory.addItem(Item.DISTILLERY, 1);
+        inventory.addItem(Item.WELL, 1);
+        inventory.addItem(Item.BARREL, 1);
+        inventory.addItem(Item.CRUSHING_POT, 1);
+        inventory.addItem(Item.FURNACE, 1);
+        inventory.addItem(Item.CAST, 1);
+        inventory.addItem(Item.STORAGE_CRATE, 1);
+        inventory.addItem(Item.SOLDERING_TABLE, 1);
+        inventory.addItem(Item.MIXER, 1);
+        inventory.addItem(Item.PLANTER, 1);
+        inventory.addItem(Item.CRUSHER, 1);
         inventory.addItem(Item.DRILL, 1);
         inventory.addItem(Item.TANK, 1);
-
         inventory.addItem(Item.SMELTER, 1);
-
-        inventory.addItem(Item.DEVBARREL, 1);
-
-        inventory.addItem(Item.CLOCK, 1);
+        inventory.addItem(Item.CHUNK_LOADER, 1);
         inventory.addItem(Item.TRASH, 1);
-        inventory.addItem(Item.GLOBE, 1);
-        inventory.addItem(Item.BOOK_SHELF, 10);
-        inventory.addItem(Item.MAP, 1);
-        inventory.addItem(Item.WOOD_PLANKS, 10);
-        inventory.addItem(Item.ANINMAL_PHONE, 1);
-        inventory.addItem(Item.POO_PET, 1);
-        inventory.addItem(Item.BUBBLE_WAND, 1);
-        inventory.addItem(Item.SODA, 1);
-        inventory.addItem(Item.FISH, 1);
+        inventory.addItem(Item.ORE_DRILL, 1);
         inventory.addItem(Item.STOVE, 1);
-
-        inventory.addItem(Item.RAW_STEAK, 1);
-        inventory.addItem(Item.COOKED_STEAK, 1);
-
-        inventory.addItem(Item.RIFLE, 1);
-        inventory.addItem(Item.RIFLE_AMMO, 10);
-
-        inventory.addItem(Item.SHOTGUN, 1);
-        inventory.addItem(Item.SHOTGUN_AMMO, 10);
+        inventory.addItem(Item.DEVBARREL, 1);
 
         loadTexture();
     }

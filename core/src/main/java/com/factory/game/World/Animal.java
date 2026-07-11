@@ -1342,16 +1342,40 @@ public class Animal {
         return worldY;
     }
 
+    public float getHealth() {
+        return health;
+    }
+
+    public float getAge() {
+        return age;
+    }
+
+    public void setHealth(float value) {
+        health = value;
+    }
+
+    public void setAge(float value) {
+        age = value;
+    }
+
+    public Genes snapshotGenes() {
+        return new Genes(
+            visionTiles,
+            speedMultiplier,
+            stomachMultiplier,
+            aggressionMultiplier,
+            reproductiveRate,
+            resilienceMultiplier,
+            maxAge
+        );
+    }
+
     public float getHunger() {
         return hunger;
     }
 
     public float getThirst() {
         return thirst;
-    }
-
-    public float getHealth() {
-        return health;
     }
 
     public float getHappiness() {
@@ -1388,10 +1412,6 @@ public class Animal {
 
     public float getMaxAge() {
         return maxAge;
-    }
-
-    public float getAge() {
-        return age;
     }
 
     public float getEffectiveSpeed() {

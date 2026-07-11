@@ -23,3 +23,5 @@ hs_err_pid72056.log
 hs_err_pid72172.log
 hs_err_pid72312.log
 hs_err_pid80412.log
+saves/slot0.sav
+saves/slot1.sav

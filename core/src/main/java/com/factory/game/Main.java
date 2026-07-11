@@ -107,6 +107,7 @@ public class Main extends ApplicationAdapter {
     private CookingMinigame cookingMinigame;
     private RifleController rifleController;
     private ShotgunController shotgunController;
+    private PauseMenuUI pauseMenuUI;
 
     private Clock clock;
     private Hunger hunger;
@@ -201,6 +202,7 @@ public class Main extends ApplicationAdapter {
 
         clock = new Clock(this, camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
         hunger = new Hunger(camera.VIRTUAL_WIDTH, camera.VIRTUAL_HEIGHT);
+        pauseMenuUI = new PauseMenuUI(this);
 
         PlanterManager planterManager = new PlanterManager();
         planterUI = new PlanterUI(planterManager);
@@ -368,7 +370,7 @@ public class Main extends ApplicationAdapter {
             }
         }
 
-        boolean uiBlocking =
+        boolean otherUiBlocking =
             inventoryUI.isVisible() ||
             siftSelectionUI.isVisible() ||
             siftMinigame.isActive() ||
@@ -383,7 +385,6 @@ public class Main extends ApplicationAdapter {
             itemFilterPipeUI.isVisible() ||
             devBarrelUI.isVisible() ||
             solderingSelectionUI.isVisible() ||
-            crushingSelectionUI.isVisible() ||
             (devConsole != null && devConsole.isVisible()) ||
             solderingMinigame.isActive() ||
             mixerUI.isVisible() ||
@@ -391,6 +392,20 @@ public class Main extends ApplicationAdapter {
             chunkLoaderUI.isVisible() ||
             goblinoHutUI.isVisible() ||
             oreDrillUI.isVisible();
+
+        if (
+            com.badlogic.gdx.Gdx.input.isKeyJustPressed(
+                com.badlogic.gdx.Input.Keys.ESCAPE
+            )
+        ) {
+            if (pauseMenuUI.isVisible()) {
+                pauseMenuUI.hide();
+            } else if (!otherUiBlocking) {
+                pauseMenuUI.show();
+            }
+        }
+
+        boolean uiBlocking = pauseMenuUI.isVisible() || otherUiBlocking;
 
         rifleController.update(
             delta,
@@ -481,6 +496,8 @@ public class Main extends ApplicationAdapter {
                 interactionHandler.handlePlacementInput();
                 interactionHandler.handleWrenchClick();
             }
+        } else if (pauseMenuUI.isVisible()) {
+            pauseMenuUI.handleInput();
         } else if (inventoryUI.isVisible()) {
             inventoryUI.handleInput();
         } else if (itemPipeUI.isVisible()) {
@@ -1066,6 +1083,8 @@ public class Main extends ApplicationAdapter {
 
         animalStatsUI.render(batch);
 
+        pauseMenuUI.render(batch);
+
         batch.end();
         batch.setShader(oldShader);
 
@@ -1143,6 +1162,7 @@ public class Main extends ApplicationAdapter {
         chunkLoaderUI.resize(width, height);
         goblinoHutUI.resize(width, height);
         oreDrillUI.resize(width, height);
+        pauseMenuUI.resize(width, height);
         animalStatsUI.resize(width, height);
         rifleController.resize(width, height);
         shotgunController.resize(width, height);
@@ -1150,6 +1170,26 @@ public class Main extends ApplicationAdapter {
             width,
             height
         );
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public WorldManager getWorldManager() {
+        return worldManager;
+    }
+
+    public Hunger getHunger() {
+        return hunger;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public com.factory.game.Renderer.LightRenderer getLightRenderer() {
+        return renderer.getLightRenderer();
     }
 
     @Override
@@ -1189,6 +1229,7 @@ public class Main extends ApplicationAdapter {
         distilleryUI.dispose();
         goblinoHutUI.dispose();
         oreDrillUI.dispose();
+        pauseMenuUI.dispose();
         animalStatsUI.dispose();
         rifleController.dispose();
         shotgunController.dispose();

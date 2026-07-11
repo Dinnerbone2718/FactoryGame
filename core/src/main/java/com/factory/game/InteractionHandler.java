@@ -622,7 +622,7 @@ public class InteractionHandler {
     }
 
     private void destroyPlacedObject(int tileX, int tileY, PlacedObject obj) {
-        world.activeDelta().removePlaced(tileX, tileY);
+        world.activeDelta().removePlaced(tileX, tileY, obj.type);
         world.saveDeltasAsync();
 
         if (

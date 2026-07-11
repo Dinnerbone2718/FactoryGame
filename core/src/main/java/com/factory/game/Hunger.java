@@ -101,6 +101,10 @@ public class Hunger {
         return currentHunger;
     }
 
+    public void setCurrentHunger(float value) {
+        currentHunger = Math.max(0f, Math.min(MAX_HUNGER, value));
+    }
+
     public float getMaxHunger() {
         return MAX_HUNGER;
     }
